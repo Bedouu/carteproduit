@@ -25,6 +25,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.layout.Row
+import androidx.compose.ui.Alignment
 
 /**
  * Mini-TP 4 — « Faire vivre un écran »
@@ -61,63 +63,107 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+//@Composable
+//fun ProduitCard(produit: Produit) {
+//    // Ce log trace chaque (re)composition de la carte — NE PAS le déplacer.
+//    Log.i("RECOMP", "ProduitCard se (re)compose")
+//    var quantite by remember { mutableStateOf(0) }
+//
+//    // TODO B (à faire APRÈS le TODO A) :
+//    // 1. Déclarez ici un état booléen :
+//          var selectionnee by remember { mutableStateOf(false) }
+//    // 2. Ajoutez au Modifier de la Card :  .clickable { selectionnee = !selectionnee }
+//    // 3. Changez la couleur de la carte selon l'état, en remplaçant
+//    //    les colors de la Card par :
+//    //      colors = CardDefaults.cardColors(
+//    //          containerColor = if (selectionnee)
+//    //              MaterialTheme.colorScheme.primaryContainer
+//    //          else MaterialTheme.colorScheme.surfaceVariant
+//    //      )
+//
+//    Card(
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .padding(16.dp)
+//            .clickable { selectionnee = !selectionnee },
+////        colors = CardDefaults.cardColors(
+////            containerColor = MaterialTheme.colorScheme.surfaceVariant
+////        ),
+//        colors = CardDefaults.cardColors(
+//                      containerColor = if (selectionnee)
+//                          MaterialTheme.colorScheme.primaryContainer
+//                      else MaterialTheme.colorScheme.surfaceVariant
+//                  ),
+//    ) {
+//        Column(Modifier.padding(16.dp)) {
+//            Text(produit.nom, style = MaterialTheme.typography.titleLarge)
+//            Text(
+//                "Origine : ${produit.origine}",
+//                style = MaterialTheme.typography.bodyMedium,
+//            )
+//            Text(
+//                produit.prixKg?.let { "${formatAriary(it)} / kg" } ?: "prix non fixé",
+//                style = MaterialTheme.typography.bodyLarge,
+//            )
+//
+//            Spacer(Modifier.height(12.dp))
+//
+//            // TODO A :
+//            // 1. Déclarez EN HAUT de la fonction (au-dessus de la Card) :
+//            //      var quantite by remember { mutableStateOf(0) }
+//            // 2. Remplacez les deux lignes ci-dessous par :
+//                  Text("Quantité : $quantite kg")
+//                  Button(onClick = { quantite++ }) { Text("Ajouter 1 kg") }
+////            Text("Quantité : (TODO A)")
+////            Button(onClick = { /* TODO A */ }) { Text("Ajouter 1 kg") }
+//        }
+//    }
+//}
 @Composable
 fun ProduitCard(produit: Produit) {
-    // Ce log trace chaque (re)composition de la carte — NE PAS le déplacer.
     Log.i("RECOMP", "ProduitCard se (re)compose")
     var quantite by remember { mutableStateOf(0) }
-
-    // TODO B (à faire APRÈS le TODO A) :
-    // 1. Déclarez ici un état booléen :
-          var selectionnee by remember { mutableStateOf(false) }
-    // 2. Ajoutez au Modifier de la Card :  .clickable { selectionnee = !selectionnee }
-    // 3. Changez la couleur de la carte selon l'état, en remplaçant
-    //    les colors de la Card par :
-    //      colors = CardDefaults.cardColors(
-    //          containerColor = if (selectionnee)
-    //              MaterialTheme.colorScheme.primaryContainer
-    //          else MaterialTheme.colorScheme.surfaceVariant
-    //      )
+    var selectionnee by remember { mutableStateOf(false) }
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
             .clickable { selectionnee = !selectionnee },
-//        colors = CardDefaults.cardColors(
-//            containerColor = MaterialTheme.colorScheme.surfaceVariant
-//        ),
         colors = CardDefaults.cardColors(
-                      containerColor = if (selectionnee)
-                          MaterialTheme.colorScheme.primaryContainer
-                      else MaterialTheme.colorScheme.surfaceVariant
-                  ),
+            containerColor = if (selectionnee)
+                MaterialTheme.colorScheme.primaryContainer
+            else MaterialTheme.colorScheme.surfaceVariant
+        ),
     ) {
-        Column(Modifier.padding(16.dp)) {
-            Text(produit.nom, style = MaterialTheme.typography.titleLarge)
-            Text(
-                "Origine : ${produit.origine}",
-                style = MaterialTheme.typography.bodyMedium,
-            )
-            Text(
-                produit.prixKg?.let { "${formatAriary(it)} / kg" } ?: "prix non fixé",
-                style = MaterialTheme.typography.bodyLarge,
-            )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Colonne de gauche : informations du produit
+            Column(modifier = Modifier.weight(1f)) {
+                Text(produit.nom, style = MaterialTheme.typography.titleLarge)
+                Text(
+                    "Origine : ${produit.origine}",
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Text(
+                    produit.prixKg?.let { "${formatAriary(it)} / kg" } ?: "prix non fixé",
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+            }
 
-            Spacer(Modifier.height(12.dp))
-
-            // TODO A :
-            // 1. Déclarez EN HAUT de la fonction (au-dessus de la Card) :
-            //      var quantite by remember { mutableStateOf(0) }
-            // 2. Remplacez les deux lignes ci-dessous par :
-                  Text("Quantité : $quantite kg")
-                  Button(onClick = { quantite++ }) { Text("Ajouter 1 kg") }
-//            Text("Quantité : (TODO A)")
-//            Button(onClick = { /* TODO A */ }) { Text("Ajouter 1 kg") }
+            // Colonne de droite : quantité + bouton
+            Column(horizontalAlignment = Alignment.End) {
+                Text("Quantité : $quantite kg")
+                Spacer(Modifier.height(8.dp))
+                Button(onClick = { quantite++ }) { Text("Ajouter 1 kg") }
+            }
         }
     }
 }
-
 /** Formate un montant en ariary : 1250000.0 -> "1 250 000 Ar" (repris du mini-TP 1). */
 fun formatAriary(montant: Double): String {
     val entier = montant.toLong().toString()
